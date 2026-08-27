@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tripnote｜讓旅行更有儀式感</title>
+<style>
+:root{--pink:#f6b9ca;--blue:#bfe1f6;--ink:#514a50;--paper:#fffdfb;--cream:#fff8f3;--line:#eadfe3}
+*{box-sizing:border-box}body{margin:0;font-family:"Arial Rounded MT Bold","Noto Sans TC",system-ui,sans-serif;background:linear-gradient(135deg,#fff 0%,#fff7fb 48%,#eef9ff 100%);color:var(--ink)}
+.wrap{max-width:980px;margin:auto;padding:36px 20px 70px}.hero{text-align:center;padding:36px 12px}.tag{display:inline-block;background:var(--blue);padding:7px 15px;border-radius:999px;font-size:13px;transform:rotate(-2deg)}
+h1{font-size:46px;margin:18px 0 8px;letter-spacing:1px}.pink{color:#e78fa9}.sub{font-size:16px;line-height:1.8;color:#776d73}.flow{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}.pill{background:white;border:1px solid var(--line);border-radius:999px;padding:9px 14px;box-shadow:0 4px 15px #dfcbd122}
+.card{background:#ffffffdd;border:1px solid var(--line);border-radius:28px;padding:26px;box-shadow:0 16px 40px #bba7ae18;margin-top:22px}.step{font-size:13px;color:#e78fa9;letter-spacing:1px}.card h2{margin:5px 0 20px;font-size:23px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.full{grid-column:1/-1}label{font-size:13px;font-weight:700;display:block;margin-bottom:6px}
+input,textarea,select{width:100%;border:1.5px solid #e7dce1;border-radius:15px;padding:13px 14px;background:#fff;font:inherit;color:var(--ink);outline:none}textarea{min-height:115px;resize:vertical}input:focus,textarea:focus,select:focus{border-color:var(--pink)}
+.days{display:grid;gap:12px}.day{padding:16px;border-radius:20px;background:#f8fbfd;border:1px dashed #cfe1eb}.day b{color:#658ca4}
+.checks{display:flex;flex-wrap:wrap;gap:9px}.chip input{display:none}.chip span{display:block;border:1px solid var(--line);background:white;padding:10px 13px;border-radius:999px;cursor:pointer;font-size:13px}.chip input:checked+span{background:#fdebf1;border-color:#f2b5c7}
+.styles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.style{border:2px solid transparent;border-radius:18px;padding:14px;cursor:pointer;min-height:100px}.style.active{border-color:#e99ab2}.s1{background:#fdf0f5}.s2{background:#f7efe8}.s3{background:#eef8ff}.s4{background:#f3f3f3}.style small{display:block;margin-top:6px;font-weight:400;line-height:1.4}
+.actions{display:flex;gap:10px;justify-content:center;margin:26px 0}.btn{border:0;border-radius:999px;padding:14px 22px;font-weight:800;cursor:pointer;font-size:15px}.primary{background:var(--pink);color:white;box-shadow:0 8px 20px #efb4c6aa}.secondary{background:var(--blue);color:#46697d}
+.output{white-space:pre-wrap;background:#fbfbfb;border:1px solid var(--line);border-radius:20px;padding:20px;font-family:ui-monospace,monospace;font-size:13px;line-height:1.65;max-height:520px;overflow:auto}
+.note{text-align:center;font-size:12px;color:#93878d;margin-top:15px}@media(max-width:700px){h1{font-size:34px}.grid,.styles{grid-template-columns:1fr}.wrap{padding:20px 14px 50px}}
+</style>
+</head>
+<body><main class="wrap">
+<section class="hero"><span class="tag">♡ TRAVEL PROMPT MAKER</span><h1>讓旅行更有<span class="pink">儀式感</span> ♡</h1>
+<p class="sub">把腦中的旅行計畫整理成 AI 聽得懂的完整指令。<br>填資料、選風格、複製 Prompt，再到你習慣的 AI 裡慢慢把旅行手冊做成喜歡的樣子。</p>
+<div class="flow"><span class="pill">✈ 填寫旅行</span><span>→</span><span class="pill">🎨 選擇風格</span><span>→</span><span class="pill">✨ 產生 AI 指令</span></div></section>
+
+<section class="card"><div class="step">STEP 01</div><h2>這次要去哪裡？</h2><div class="grid">
+<div><label>旅行名稱</label><input id="tripName" placeholder="例如：台中兩天一夜"></div>
+<div><label>旅行日期</label><input id="dates" placeholder="例如：2026/09/12 - 09/13"></div>
+<div><label>旅行天數</label><select id="days" onchange="renderDays()"><option value="2">2 天 1 夜</option><option value="1">1 日遊</option><option value="3">3 天 2 夜</option><option value="4">4 天 3 夜</option><option value="5">5 天 4 夜</option><option value="6">6 天 5 夜</option><option value="7">7 天 6 夜</option></select></div>
+<div><label>旅伴／團名</label><input id="group" placeholder="例如：安糾 × 小李"></div>
+<div class="full"><label>去哪裡玩？</label><input id="place" placeholder="例如：台中＋彰化"></div>
+</div></section>
+
+<section class="card"><div class="step">STEP 02</div><h2>住宿＆目前行程</h2><div id="dayFields" class="days"></div></section>
+
+<section class="card"><div class="step">STEP 03</div><h2>旅行書想放什麼？</h2>
+<div class="checks" id="checks">
+<label class="chip"><input type="checkbox" checked value="每日行程"><span>🗓 每日行程</span></label>
+<label class="chip"><input type="checkbox" checked value="行李清單"><span>🧳 行李清單</span></label>
+<label class="chip"><input type="checkbox" checked value="住宿資訊"><span>🏨 住宿資訊</span></label>
+<label class="chip"><input type="checkbox" checked value="交通資訊"><span>🛵 交通資訊</span></label>
+<label class="chip"><input type="checkbox" value="美食攻略"><span>🍜 美食攻略</span></label>
+<label class="chip"><input type="checkbox" value="景點攻略"><span>📍 景點攻略</span></label>
+<label class="chip"><input type="checkbox" value="購物清單"><span>🛍 購物清單</span></label>
+<label class="chip"><input type="checkbox" checked value="旅行小任務"><span>♡ 旅行小任務</span></label>
+<label class="chip"><input type="checkbox" checked value="MEMO／照片留白"><span>📷 MEMO／照片</span></label>
+</div>
+<div style="margin-top:16px"><label>其他想特別放進去的內容</label><textarea id="extra" placeholder="例如：大慶夜市獨立一頁，必吃老拌香噴牛三寶、小米辣麻辣串串、雞蛋灌餅。"></textarea></div>
+</section>
+
+<section class="card"><div class="step">STEP 04</div><h2>選擇旅行書風格</h2>
+<div class="styles">
+<div class="style s1 active" data-style="可愛手帳風｜白色＋粉紅＋天藍，粗圓體，紙膠帶、愛心、星星、手繪 icon、貼紙感"><b>Pastel Diary ♡</b><small>白 × 粉 × 天藍<br>可愛手帳、粗圓體</small></div>
+<div class="style s2" data-style="奶油情侶風｜奶油白＋咖啡＋淡粉，溫柔圓體，拍立得與簡約小插圖"><b>Creamy Couple</b><small>奶油 × 咖啡<br>溫柔約會感</small></div>
+<div class="style s3" data-style="繽紛朋友風｜粉藍黃綠，高彩度貼紙、搞怪 icon、活潑手寫感"><b>Colorful Friends</b><small>繽紛 × 搞怪<br>朋友旅行</small></div>
+<div class="style s4" data-style="極簡旅行風｜白＋灰＋低飽和藍，乾淨網格、現代圓體、大量留白"><b>Minimal Travel</b><small>低飽和 × 留白<br>成熟簡約</small></div>
+</div>
+<div class="grid" style="margin-top:16px"><div><label>輸出尺寸</label><select id="size"><option>A5 直式・每頁尺寸完全一致・適合列印裝訂</option><option>A4 直式</option><option>手機直式 9:16</option></select></div>
+<div><label>使用的 AI 工具</label><select id="ai"><option>ChatGPT</option><option>Gemini</option><option>其他 AI 工具</option></select></div></div>
+</section>
+
+<div class="actions"><button class="btn primary" onclick="generate()">✨ 產生 AI 製作指令</button><button class="btn secondary" onclick="copyPrompt()">複製完整指令</button></div>
+<section class="card"><div class="step">YOUR PROMPT</div><h2>你的旅行手冊製作指令</h2><div id="output" class="output">填完上面的旅行資料後，按「產生 AI 製作指令」♡</div><p class="note">生成後直接複製到你的 AI 工具，再用對話慢慢修改成最喜歡的版本。</p></section>
+</main>
+<script>
+let selectedStyle=document.querySelector('.style').dataset.style;
+document.querySelectorAll('.style').forEach(x=>x.onclick=()=>{document.querySelectorAll('.style').forEach(y=>y.classList.remove('active'));x.classList.add('active');selectedStyle=x.dataset.style});
+function renderDays(){let n=+document.getElementById('days').value,box=document.getElementById('dayFields');box.innerHTML='';for(let i=1;i<=n;i++){box.innerHTML+=`<div class="day"><b>DAY ${i}</b><div class="grid" style="margin-top:10px"><div><label>${i<n?'今晚住哪裡？':'最後一天'}</label><input class="stay" ${i==n?'placeholder="最後一天可留空"':'placeholder="住宿名稱"'}></div><div><label>目前行程規劃</label><textarea class="plan" placeholder="可以直接用口語貼上，例如：12:00 吃燒肉，下午去勤美或 LaLaport"></textarea></div></div></div>`}}
+function generate(){let selected=[...document.querySelectorAll('#checks input:checked')].map(x=>x.value).join('、');let ds=[...document.querySelectorAll('.day')].map((d,i)=>`DAY ${i+1}\n住宿：${d.querySelector('.stay').value||'未填'}\n行程：${d.querySelector('.plan').value||'未填'}`).join('\n\n');
+let p=`請依照以下資料，協助我製作一本專屬旅行手冊。這不是一般行程表，而是一份有儀式感、可以收藏與列印的旅行小誌。
+
+【旅行基本資料】
+旅行名稱：${tripName.value||'未填'}
+日期：${dates.value||'未填'}
+旅行天數：${days.options[days.selectedIndex].text}
+旅伴／團名：${group.value||'未填'}
+目的地：${place.value||'未填'}
+
+【每天住宿與行程】
+${ds}
+
+【希望包含的頁面】
+${selected||'請依內容建議'}
+其他特別內容：${extra.value||'無'}
+
+【視覺風格】
+${selectedStyle}
+
+【輸出規格】
+${size.value}
+所有頁面必須維持相同尺寸與比例，不可因內容多寡改變頁面大小。若需要列印，請保留安全邊界。整本的字體、icon、插畫、色彩與裝飾語言必須一致。
+
+【製作原則】
+1. 不得自行更改我提供的日期、時間、住宿、交通與行程事實。
+2. 請先根據資料規劃完整頁面順序，再開始視覺生成。
+3. 行程內容請整理得好讀，但保留原意。
+4. 可依旅行內容自動提出適合的行李清單與旅行小任務，但不要捏造已預約或已確認的資訊。
+5. 如果我提供參考圖片，請以參考圖片的版面密度、配色、字體感、icon 與貼紙語言作為主要視覺依據。
+6. 後續我要求局部修改時，未被點名的頁面與元素都不要改動；若局部修改會破壞字體或版面一致性，請重新製作該「整頁」，不要直接疊字。
+7. 最終若輸出 PDF，請確保每一頁紙張尺寸完全一致，適合實體列印與裝訂。
+
+請先告訴我你預計製作哪些頁面，以及每一頁會放什麼；等我確認後再開始生成。`;
+document.getElementById('output').textContent=p}
+async function copyPrompt(){let t=document.getElementById('output').textContent;if(t.startsWith('填完'))return;await navigator.clipboard.writeText(t);alert('已複製完整指令 ♡')}
+renderDays();
+</script></body></html>
